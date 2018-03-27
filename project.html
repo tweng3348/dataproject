@@ -1,0 +1,101 @@
+<!doctype html>
+<html>
+
+    <style>
+    .card{
+        width:300px;
+
+        padding:10px;
+        margin:10px;
+        display:inline-block;
+        border-radius:10px;
+        
+    }
+    h1{
+        font-family:"Arial";
+        text-shadow:gray 2px 2px 2px;
+    }
+    p,a{
+        font-size:14pt;
+        font-family:"Arial";
+    }
+    img{
+        width:90%;
+        margin:5px;
+        border-radius:10px;
+        box-shadow:black 5px 5px 5px;
+    }
+    a{
+        background-color:blue;
+        text-decoration:none;
+        color:white;
+        font-weight:bold;
+        padding:5px;
+        border-radius:10px;
+        box-shadow:black 5px 5px 5px;
+    }
+</style>
+
+
+
+    
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js"></script>
+    <script type="text/template" id="ctmp">
+    <div class="card">
+        <h1> {{borough}} </h1>
+        <p> {{descriptor}} </p>
+        <p> ( {{location}} )</p>
+        <marquee> {{ name }} </marquee>
+    </script>
+    <script>
+        var data;
+        function search(){
+            $.getJSON("https://data.cityofnewyork.us/resource/g77k-nifh.json",function(results){
+                data = results;
+            })
+        }
+        function displayMonuments(){
+            var build = "";
+            var borough = [];
+            var output =document.getElementById("output");
+            
+            for(var index = 0; index < data.length; index++){
+                try{
+               if(data[index].borough.toLowerCase().indexOf(borough.value.toLowerCase()) !=  -1){
+                build += Mustache.render(data[index]);
+               }
+               }catch(e){}
+                build += "<div class = 'card'>"
+                build += "<h2>" + data[index].borough + "</h2>"
+                build += "<p>" + data[index].descrip + "<hr>"
+                build += "<p>" + data[index].name + "</p><hr>"
+                build += "<p>(" + data[index].location + " )<p>";
+                
+                }
+            
+             console.log(borough);   
+             output.innerHTML = build;
+            }
+            
+         
+            
+        
+        
+    
+    //This data set is about monuments that is maintained in NYC parks. Before it was being stored in a data set origninaly its was put on index cards dating back to the 1940s. To this day this data set is being updated everytime there is a new monument and providing informatin about it.
+    
+    </script>
+    <body onload="search()">
+        <input type="text" id="borough" placeholder="Search">
+        <button onclick="displayMonuments()">Search</button>
+        <div id="output"></div>
+
+       
+    </body>
+
+
+
+
+</html>
